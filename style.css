@@ -1,0 +1,294 @@
+body {
+    background-color: black;
+    color: white;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Roboto", sans-serif;
+}
+
+.bgBlack {
+    background-color: black;
+
+    color: white;
+}
+
+.invert {
+    filter: invert(1);
+}
+
+.left {
+    width: 22vw;
+    padding: 10px;
+}
+
+.right {
+    width: 75vw;
+
+}
+
+.bg-grey {
+    background-color: hsl(0deg 0% 7.06%);
+}
+
+.home ul li {
+    display: flex;
+    gap: 15px;
+    width: 25px;
+    padding-top: 25px;
+    list-style-type: none;
+    font-weight: bold;
+}
+
+.home {
+    padding: 10px;
+}
+
+.heading img {
+    width: 25px;
+}
+
+.heading {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    padding-top: 25px;
+    font-size: 15px;
+    font-weight: bold;
+    align-items: center;
+    padding: 12px 6px;
+
+}
+
+.library {
+    min-height: 80vh;
+    position: relative;
+}
+
+.footer {
+    display: flex;
+    font-size: 8px;
+    position: absolute;
+    bottom: 0;
+    gap: 15px;
+    padding: 10px 0 ;
+  
+}
+
+.footer a {
+    color: grey;
+    text-decoration: none;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+
+
+
+}
+
+.right {
+    margin: 16px 0;
+    position: relative;
+}
+
+.header>* {
+    padding: 20px;
+
+}
+
+.spotifyplay {
+    padding: 20px;
+}
+
+.cardContainer {
+    margin: 30px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    overflow-y: auto;
+    max-height: 70vh; 
+}
+
+.spotifyplay .card {
+    width: 175px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: #111111;
+
+}
+.card{
+    position: relative;
+}
+
+
+.card>* {
+    padding-top: 10px;
+}
+
+.card img {
+    width: 100%;
+    /*  This is used to fit image in particular box  */
+    object-fit: contain;
+}
+.play{
+    position: absolute;
+    top: 150px;
+    right: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    opacity: 1;
+    /* transition: all 2s ease-out; */
+}
+.card:hover    {
+    background-color: #252525;
+    
+    
+}
+.signup{
+    background-color:rgb(7 6 6) ;/* Adjust the last value (0.5) to change the opacity */
+    /* Other button styles */
+    color: rgb(172, 167, 167);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Roboto", sans-serif;
+    font-size: 15px;
+}
+.signup:hover{
+    color: white;
+    font-weight: bold;
+   
+}
+.login{
+    background-color: white; /* Adjust the last value (0.5) to change the opacity */
+    /* Other button styles */
+    color: rgb(8, 8, 8);
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+        cursor: pointer;
+    font-family: "Roboto", sans-serif;  
+
+}
+.login:hover{
+    color: black;
+    font-weight: bold;
+}
+
+.playbar{
+    position: fixed;
+    bottom: 20px;
+    background: #e2d9d9;
+    width:70vw; 
+    padding: 12px;
+    filter: invert(1);
+    border-radius: 10px;
+    height: 33px;
+  
+}
+.songbtn{
+    display: flex;
+    gap: 125px;
+    justify-content: center;
+}
+.songbtn img{
+    cursor: pointer;
+}
+.songlist{
+    height: 544px;
+    overflow: auto;
+    margin-bottom: 44px;
+}
+.songlist ul{
+    padding: 0 8px;
+
+}
+.songlist ul li{
+    list-style-type: decimal;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    cursor: pointer;
+    padding: 12px 0;
+    border: 1px solid rgba(146, 143, 143, 0.491);
+    margin: 12px 0;
+    padding: 13px;
+    border-radius: 5px;
+}
+.info div{
+    padding-top: 7px;
+}
+.playnow{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+
+}
+.songlist .info{
+    font-size: 13px;
+    width: 344px;
+    
+}
+.playnow span{
+
+    font-size: 15px;
+    width: 64px;
+    padding: 12px;
+
+}
+
+
+
+.seekbar{
+    height: 6px;
+    width: 98%; 
+   background:  black;
+    position: absolute;
+    bottom: 0;
+    border-radius: 10px;
+    margin: 6px;
+    cursor: pointer;
+}
+.circle{
+    width: 13px;
+    height: 13px;
+    border-radius: 13px;
+    background-color: black;
+    position: relative;
+    bottom: 5px;
+    left: 0%;
+    transition: left 0.5s;
+
+}
+.songinfo  , .songtime{
+    padding: 0 12px;
+
+}
+.abvbar{
+    display: flex;
+    color: black;
+    justify-content: space-between;
+}
+@media(max-width : 1400px){
+    .left{
+        background-color: blue;
+    }
+    
+}
+
+
+
+
+
+

@@ -1,0 +1,42 @@
+/* This will include those classes which can be usable with any element */
+
+.border{
+    border: 2px solid black;
+    margin: 2px ;
+}
+
+.flex{
+    display: flex;
+}
+.justify-center{
+    justify-content: center;
+ 
+}
+.align-items{
+    align-items: center;
+}
+.rounded{
+    border-radius: 7px;
+}
+.margin{
+    margin: 5px;
+}
+.p1{
+    padding: 10px;
+}
+
+/* Set scrollbar width and track color */
+::-webkit-scrollbar {
+    width: 10px; /* width of the scrollbar */
+}
+
+/* Set the thumb color */
+::-webkit-scrollbar-thumb {
+    background-color: #888; /* color of the thumb */
+    border-radius: 5px; /* roundness of the thumb */
+}
+
+/* Set the track color */
+::-webkit-scrollbar-track {
+    background-color: #333; /* color of the track */
+}
