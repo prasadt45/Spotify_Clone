@@ -127,6 +127,19 @@ async function main() {
             play.src = "play.svg";
         }
     });
+
+
+    // Add event listner for hamburger
+     let hamb = document.querySelector(".hamburger")
+     hamb.addEventListener("click" , ()=>{
+        document.querySelector(".left").style.left = "0"
+     })
+
+     // Add Event listner on cross 
+     let cross = document.querySelector(".close")
+     cross.addEventListener("click" , ()=>{
+        document.querySelector(".left").style.left="-110%"
+     })
 }
 
 main();
