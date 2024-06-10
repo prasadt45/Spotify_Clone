@@ -115,15 +115,20 @@ body {
     max-height: 70vh; 
 }
 
-.spotifyplay .card {
+/* .spotifyplay {
     width: 175px;
     padding: 10px;
     border-radius: 8px;
     background-color: #000000;
 
-}
+} */
 .card{
+    width: 200px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: black;
     position: relative;
+    transition: all .1s;
 }
 
 
@@ -193,7 +198,7 @@ body {
     padding: 12px;
     filter: invert(1);
     border-radius: 10px;
-    height: 33px;
+    min-height: 33px;
   
 }
 .songbtn{
@@ -282,9 +287,11 @@ body {
 
 }
 .abvbar{
-    display: flex;
-    color: black;
+   display: flex;
     justify-content: space-between;
+    margin: 20px 0;
+    width: 100%;
+    color: black;
 }
 .hamburger{
     display:none;
@@ -322,12 +329,44 @@ body {
         padding-left: 6px;
     }
     .playbar{
-        width: 88vw;
+        width: calc(100vw - 70px);
         
     }
     .seekbar{
-        width: 88%;
+        width:calc(100vw - 70px);
     }
+   
+
+   
+    .cardContainer{
+        justify-content: center;
+       
+    
+    }
+    .cardContainer{
+        margin: 0;
+    }
+    .card{
+        width: 90vw;
+    }
+    .card:hover    {
+        background-color: #252525;
+        
+        
+    }
+    .playbar{
+        right: 25px;
+    }
+    .abvbar{
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+        
+    }
+    .right{
+        margin: 0;
+    }
+   
 }
 
 

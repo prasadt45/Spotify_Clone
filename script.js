@@ -105,6 +105,44 @@ async function main() {
         songUl.appendChild(li);
     });
 
+    // Show the first song's info by default
+    if (songs.length > 0) {
+        document.querySelector(".songinfo").innerHTML = songs[0];
+        let tempAudio = new Audio("/songs/" + encodeURIComponent(songs[0]));
+        tempAudio.addEventListener("loadedmetadata", () => {
+            document.querySelector(".songtime").innerHTML = `00:00 / ${secondsToMinutesSeconds(tempAudio.duration)}`;
+        });
+        play.addEventListener("click", () => {
+            if (tempAudio.paused) {
+                tempAudio.play();
+                play.src = "pause.svg";
+            } else {
+                tempAudio.pause();
+                play.src = "play.svg";
+            }
+        });
+         // Show Duration
+    tempAudio.addEventListener("timeupdate", () => {
+        console.log(tempAudio.currentTime, tempAudio.duration);
+        document.querySelector(".songtime").innerHTML =
+            `${secondsToMinutesSeconds(tempAudio.currentTime)} / ${secondsToMinutesSeconds(tempAudio.duration)}`;
+
+        // Move circle of seekbar by changing its left property
+        const percent = (tempAudio.currentTime / tempAudio.duration) * 100;
+        document.querySelector(".circle").style.left = percent + "%";
+    });
+
+    // Add event listener to seekbar
+    document.querySelector(".seekbar").addEventListener("click", e => {
+        let percent = (e.offsetX / e.target.getBoundingClientRect().width) * 100;
+        document.querySelector(".circle").style.left = percent + "%";
+        tempAudio.currentTime = (tempAudio.duration * percent) / 100;
+    });
+        
+
+        
+    }
+
     // Attach event listeners to each song
     Array.from(document.querySelectorAll(".songlist li")).forEach(e => {
         e.addEventListener("click", () => {
@@ -128,18 +166,18 @@ async function main() {
         }
     });
 
+    // Add event listener for hamburger
+    let hamb = document.querySelector(".hamburger");
+    hamb.addEventListener("click", () => {
+        document.querySelector(".left").style.left = "0";
+    });
 
-    // Add event listner for hamburger
-     let hamb = document.querySelector(".hamburger")
-     hamb.addEventListener("click" , ()=>{
-        document.querySelector(".left").style.left = "0"
-     })
-
-     // Add Event listner on cross 
-     let cross = document.querySelector(".close")
-     cross.addEventListener("click" , ()=>{
-        document.querySelector(".left").style.left="-110%"
-     })
+    // Add event listener on cross
+    let cross = document.querySelector(".close");
+    cross.addEventListener("click", () => {
+        document.querySelector(".left").style.left = "-110%";
+    });
+    
 }
 
 main();
@@ -152,4 +190,6 @@ Changes and Improvements:
 4. Simplified the creation and appending of list items by using `createElement` and `appendChild` for better readability and performance.
 5. Added comments to explain each step and significant changes from the previous version, improving code maintainability and readability.
 6. Added an event listener to the seekbar circle to allow seeking to a specific point in the song.
+7. Set the first song's details and duration by default if no song is played.
+8. Automatically trigger the click event on the first song item to play it by default.
 */
