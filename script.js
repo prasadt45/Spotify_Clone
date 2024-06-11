@@ -56,7 +56,7 @@ const playMusic = (track, currentSong, pause = false) => {
     // Create a new audio object for the selected track and play it
     currentSong = new Audio("/songs/" + encodeURIComponent(track));
     currentSong.play();
-    play.src = "pause.svg";
+    play.src = "pause.svg"; // Change to pause button
     document.querySelector(".songinfo").innerHTML = track;
     document.querySelector(".songtime").innerHTML = "00:00 / 00:00";
 
@@ -83,6 +83,7 @@ const playMusic = (track, currentSong, pause = false) => {
 
 async function main() {
     let currentSong = null;
+    let currentSongIndex = 0; // Variable to keep track of the current song index
 
     // Get the list of all songs
     let songs = await getSongs();
@@ -105,53 +106,47 @@ async function main() {
         songUl.appendChild(li);
     });
 
-    // Show the first song's info by default
-    if (songs.length > 0) {
-        document.querySelector(".songinfo").innerHTML = songs[0];
-        let tempAudio = new Audio("/songs/" + encodeURIComponent(songs[0]));
-        tempAudio.addEventListener("loadedmetadata", () => {
-            document.querySelector(".songtime").innerHTML = `00:00 / ${secondsToMinutesSeconds(tempAudio.duration)}`;
-        });
-        play.addEventListener("click", () => {
-            if (tempAudio.paused) {
-                tempAudio.play();
-                play.src = "pause.svg";
-            } else {
-                tempAudio.pause();
-                play.src = "play.svg";
-            }
-        });
-         // Show Duration
-    tempAudio.addEventListener("timeupdate", () => {
-        console.log(tempAudio.currentTime, tempAudio.duration);
-        document.querySelector(".songtime").innerHTML =
-            `${secondsToMinutesSeconds(tempAudio.currentTime)} / ${secondsToMinutesSeconds(tempAudio.duration)}`;
-
-        // Move circle of seekbar by changing its left property
-        const percent = (tempAudio.currentTime / tempAudio.duration) * 100;
-        document.querySelector(".circle").style.left = percent + "%";
-    });
-
-    // Add event listener to seekbar
-    document.querySelector(".seekbar").addEventListener("click", e => {
-        let percent = (e.offsetX / e.target.getBoundingClientRect().width) * 100;
-        document.querySelector(".circle").style.left = percent + "%";
-        tempAudio.currentTime = (tempAudio.duration * percent) / 100;
-    });
-        
-
-        
+    // Function to play a song by its index
+    function playSongByIndex(index) {
+        if (index < 0 || index >= songs.length) {
+            return; // Index out of range
+        }
+        let songName = songs[index];
+        currentSong = playMusic(songName, currentSong);
+        currentSongIndex = index; // Update current song index
     }
 
-    // Attach event listeners to each song
-    Array.from(document.querySelectorAll(".songlist li")).forEach(e => {
-        e.addEventListener("click", () => {
-            // Get the song name from the info div
-            // Used `textContent` instead of `innerHTML` to extract the song name, which is cleaner and safer for plain text.
-            let songName = e.querySelector(".info > div:first-child").textContent.trim();
-            console.log(songName);
+    // Play the first song by default
+    playSongByIndex(0);
 
-            currentSong = playMusic(songName, currentSong);
+    // Attach event listener to the "next" button
+    next.addEventListener("click", () => {
+        // Increment the current song index
+        currentSongIndex++;
+        // Check if the index exceeds the number of songs, loop back to the first song
+        if (currentSongIndex >= songs.length) {
+            currentSongIndex = 0;
+        }
+        // Play the next song
+        playSongByIndex(currentSongIndex);
+    });
+
+    // Attach event listener to the "prev" button
+    prev.addEventListener("click", () => {
+        // Decrement the current song index
+        currentSongIndex--;
+        // Check if the index is less than 0, loop back to the last song
+        if (currentSongIndex < 0) {
+            currentSongIndex = songs.length - 1;
+        }
+        // Play the previous song
+        playSongByIndex(currentSongIndex);
+    });
+
+    // Attach event listeners to each song
+    Array.from(document.querySelectorAll(".songlist li")).forEach((e, index) => {
+        e.addEventListener("click", () => {
+            playSongByIndex(index); // Play the clicked song
         });
     });
 
@@ -159,7 +154,7 @@ async function main() {
     play.addEventListener("click", () => {
         if (currentSong.paused) {
             currentSong.play();
-            play.src = "pause.svg";
+            play.src = "pause.svg"; // Change to pause button
         } else {
             currentSong.pause();
             play.src = "play.svg";
@@ -177,19 +172,27 @@ async function main() {
     cross.addEventListener("click", () => {
         document.querySelector(".left").style.left = "-110%";
     });
-    
+    // Add event to voume 
+    document.querySelector(".range").getElementsByTagName("input")[0].addEventListener("change" , (e)=>{
+         
+         currentSong.volume = parseInt(e.target.value)/100 ; 
+         if(currentSong.volume ==0){
+            vll.src="mute.svg" ;
+         }else{
+            vll.src="volume.svg"
+         }
+    })
+
 }
-
-main();
-
-/*
-Changes and Improvements:
-1. Renamed `responce` to `response` for correct spelling.
-2. Used `decodeURIComponent` and `encodeURIComponent` to handle special characters in song names, ensuring that song names are correctly parsed and played.
-3. Added code to pause the current song and clear its source before playing a new one, to ensure only one song plays at a time.
-4. Simplified the creation and appending of list items by using `createElement` and `appendChild` for better readability and performance.
-5. Added comments to explain each step and significant changes from the previous version, improving code maintainability and readability.
-6. Added an event listener to the seekbar circle to allow seeking to a specific point in the song.
-7. Set the first song's details and duration by default if no song is played.
-8. Automatically trigger the click event on the first song item to play it by default.
+    /*
+    Changes and Improvements:
+    1. Renamed `responce` to `response` for correct spelling.
+    2. Used `decodeURIComponent` and `encodeURIComponent` to handle special characters in song names, ensuring that song names are correctly parsed and played.
+    3. Added code to pause the current song and clear its source before playing a new one, to ensure only one song plays at a time.
+    4. Simplified the creation and appending of list items by using `createElement` and `appendChild` for better readability and performance.
+    5. Added comments to explain each step and significant changes from the previous version, improving code maintainability and readability.
+    6. Added an event listener to the seekbar circle to allow seeking to a specific point in the song.
+    7. Set the first song's
 */
+
+main()

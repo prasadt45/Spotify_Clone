@@ -245,6 +245,7 @@ body {
     width: 344px;
     
 }
+
 .playnow span{
 
     font-size: 15px;
@@ -304,15 +305,31 @@ body {
     height: 20px;
     width: 25px ; 
     }
+    .vol{
+        display: flex;
+        justify-content: center;
+    }
+.volume{
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+}
+.range > input{
+    color: white;
+}
+
+
 /* responsivenessss*/ 
 @media(max-width : 1400px){
     .left{
         position: absolute; 
-        left : -110% ; 
+        left : -115% ; 
         transition: all .3s ; 
         z-index: 1 ; 
         width: 383px ;
         background-color: black;
+        padding: 0;
      }
      .right{
         width: 100vw;
@@ -329,11 +346,11 @@ body {
         padding-left: 6px;
     }
     .playbar{
-        width: calc(100vw - 70px);
+        width: calc(100vw - 75px);
         
     }
     .seekbar{
-        width:calc(100vw - 70px);
+        width:calc(100vw - 75px);
     }
    
 
@@ -359,12 +376,18 @@ body {
     }
     .abvbar{
         flex-direction: column;
-        gap: 20px;
+        gap: 10px;
         align-items: center;
         
     }
     .right{
         margin: 0;
+    }
+    .songinfo , .songtime{
+        width: auto;
+    }
+    .songbtn{
+        gap: 100px;
     }
    
 }
