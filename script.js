@@ -1,4 +1,5 @@
 console.log("LET'S GO!");
+let currfolder;
 function secondsToMinutesSeconds(seconds) {
     if (isNaN(seconds) || seconds < 0) {
         return "00:00";
@@ -13,10 +14,11 @@ function secondsToMinutesSeconds(seconds) {
     return `${formattedMinutes}:${formattedSeconds}`;
 }
 
-async function getSongs() {
+async function getSongs(folder) {
+    currfolder = folder;
     try {
         // Fetch the list of songs from the server
-        let response = await fetch("http://127.0.0.1:5500/songs/");
+        let response = await fetch(`http://127.0.0.1:5500/${folder}/`);
         let text = await response.text();
         console.log(text);
 
@@ -34,16 +36,45 @@ async function getSongs() {
             const element = links[i];
             if (element.href.endsWith(".mp3")) {
                 // Decode URI component to handle special characters
-                songs.push(decodeURIComponent(element.href.split("/songs/")[1]));
+                songs.push(decodeURIComponent(element.href.split(`/${folder}/`)[1]));
             }
         }
+        
+        // Update the song list in the UI
+        let songUl = document.querySelector(".songlist ul");
+        songUl.innerHTML = "";
+        songs.forEach(song => {
+            let li = document.createElement("li");
+            li.innerHTML = `
+                <img class="invert" src="music.svg" alt="">
+                <div class="info">
+                    <div>${song}</div>
+                    <div>Song Artist</div>
+                </div>
+                <div class="playnow">
+                    <span>Play Now</span>
+                    <img class="invert" src="play.svg" alt="">
+                </div>`;
+            songUl.appendChild(li);
+        });
+
+        // Reattach event listeners to each song
+        Array.from(document.querySelectorAll(".songlist li")).forEach((e, index) => {
+            e.addEventListener("click", () => {
+                playSongByIndex(index); // Play the clicked song
+                currentSong.play();
+                play.src = "pause.svg"; // Change to pause button
+            });
+        });
+
         return songs;
     } catch (error) {
         console.error("Error fetching songs:", error);
     }
 }
 
-const playMusic = (track, currentSong, pause = false) => {
+
+const playMusic = (track, currentSong) => {
     // Ensure a track is provided
     if (!track) return;
 
@@ -53,10 +84,8 @@ const playMusic = (track, currentSong, pause = false) => {
         currentSong.src = '';
     }
 
-    // Create a new audio object for the selected track and play it
-    currentSong = new Audio("/songs/" + encodeURIComponent(track));
-    currentSong.play();
-    play.src = "pause.svg"; // Change to pause button
+    // Create a new audio object for the selected track
+    currentSong = new Audio(`/${currfolder}/` + encodeURIComponent(track));
     document.querySelector(".songinfo").innerHTML = track;
     document.querySelector(".songtime").innerHTML = "00:00 / 00:00";
 
@@ -86,25 +115,10 @@ async function main() {
     let currentSongIndex = 0; // Variable to keep track of the current song index
 
     // Get the list of all songs
-    let songs = await getSongs();
+    let songs = await getSongs("songs/ncs");
     console.log(songs);
 
-    // Add songs to the library and show all the songs in the playlist
-    let songUl = document.querySelector(".songlist ul");
-    songs.forEach(song => {
-        let li = document.createElement("li");
-        li.innerHTML = `
-            <img class="invert" src="music.svg" alt="">
-            <div class="info">
-                <div>${song}</div>
-                <div>Song Artist</div>
-            </div>
-            <div class="playnow">
-                <span>Play Now</span>
-                <img class="invert" src="play.svg" alt="">
-            </div>`;
-        songUl.appendChild(li);
-    });
+    
 
     // Function to play a song by its index
     function playSongByIndex(index) {
@@ -116,8 +130,10 @@ async function main() {
         currentSongIndex = index; // Update current song index
     }
 
-    // Play the first song by default
-    playSongByIndex(0);
+    // Display the first song's information by default
+    if (songs.length > 0) {
+        playSongByIndex(0);
+    }
 
     // Attach event listener to the "next" button
     next.addEventListener("click", () => {
@@ -129,6 +145,8 @@ async function main() {
         }
         // Play the next song
         playSongByIndex(currentSongIndex);
+        currentSong.play();
+        play.src = "pause.svg"; // Change to pause button
     });
 
     // Attach event listener to the "prev" button
@@ -141,17 +159,23 @@ async function main() {
         }
         // Play the previous song
         playSongByIndex(currentSongIndex);
+        currentSong.play();
+        play.src = "pause.svg"; // Change to pause button
     });
 
     // Attach event listeners to each song
     Array.from(document.querySelectorAll(".songlist li")).forEach((e, index) => {
         e.addEventListener("click", () => {
             playSongByIndex(index); // Play the clicked song
+            currentSong.play();
+            play.src = "pause.svg"; // Change to pause button
         });
     });
 
     // Attach event listener to play/pause button
     play.addEventListener("click", () => {
+        if (!currentSong) return; // No song selected
+
         if (currentSong.paused) {
             currentSong.play();
             play.src = "pause.svg"; // Change to pause button
@@ -172,27 +196,26 @@ async function main() {
     cross.addEventListener("click", () => {
         document.querySelector(".left").style.left = "-110%";
     });
-    // Add event to voume 
-    document.querySelector(".range").getElementsByTagName("input")[0].addEventListener("change" , (e)=>{
-         
-         currentSong.volume = parseInt(e.target.value)/100 ; 
-         if(currentSong.volume ==0){
-            vll.src="mute.svg" ;
-         }else{
-            vll.src="volume.svg"
-         }
-    })
+
+    // Add event to volume control
+    document.querySelector(".range").getElementsByTagName("input")[0].addEventListener("change", e => {
+        currentSong.volume = parseInt(e.target.value) / 100;
+        if (currentSong.volume == 0) {
+            vll.src = "mute.svg";
+        } else {
+            vll.src = "volume.svg";
+        }
+    });
+
+
+    // Load the playlist  whenwver card is clicked 
+      Array.from(document.getElementsByClassName("card")).forEach(e=>{
+        e.addEventListener("click" , async item=>{
+           songs = await getSongs(`songs/${item.currentTarget.dataset.folder}`);
+            
+        })
+      })
 
 }
-    /*
-    Changes and Improvements:
-    1. Renamed `responce` to `response` for correct spelling.
-    2. Used `decodeURIComponent` and `encodeURIComponent` to handle special characters in song names, ensuring that song names are correctly parsed and played.
-    3. Added code to pause the current song and clear its source before playing a new one, to ensure only one song plays at a time.
-    4. Simplified the creation and appending of list items by using `createElement` and `appendChild` for better readability and performance.
-    5. Added comments to explain each step and significant changes from the previous version, improving code maintainability and readability.
-    6. Added an event listener to the seekbar circle to allow seeking to a specific point in the song.
-    7. Set the first song's
-*/
 
-main()
+main();

@@ -4,7 +4,9 @@ body {
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
-
+:root{
+    --a:0 ; 
+}
 * {
     margin: 0;
     padding: 0;
@@ -128,8 +130,9 @@ body {
     border-radius: 5px;
     background-color: black;
     position: relative;
-    transition: all .1s;
+    transition: all .3s;
 }
+
 
 
 .card>* {
@@ -150,11 +153,14 @@ body {
     align-items: center;
     width: 30px;
     height: 30px;
-    opacity: 1;
-    /* transition: all 2s ease-out; */
+    opacity: var(--a);
+    transition: all .2s ease-out;
 }
 .card:hover    {
     background-color: #252525;
+    cursor: pointer;
+    --a:1 ; 
+
     
     
 }
@@ -321,10 +327,10 @@ body {
 
 
 /* responsivenessss*/ 
-@media(max-width : 1400px){
+@media(max-width : 1200px){
     .left{
         position: absolute; 
-        left : -115% ; 
+        left : -110% ; 
         transition: all .3s ; 
         z-index: 1 ; 
         width: 383px ;
@@ -364,7 +370,7 @@ body {
         margin: 0;
     }
     .card{
-        width: 90vw;
+        width: 40vw;
     }
     .card:hover    {
         background-color: #252525;
@@ -391,7 +397,11 @@ body {
     }
    
 }
-
+@media(max-width :400px){
+    .card{
+        width:80vw ;
+    }
+}
 
 
 
