@@ -323,8 +323,12 @@ body {
     cursor: pointer;
 }
 .range > input{
-    color: white;
+    
     cursor: pointer;
+}
+.range input{
+    color: black;
+   
 }
 
 

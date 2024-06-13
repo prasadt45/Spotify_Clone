@@ -83,7 +83,7 @@ const playMusic = (track) => {
     document.querySelector(".songinfo").innerHTML = track;
     document.querySelector(".songtime").innerHTML = "00:00 / 00:00";
 
-    // Show Duration
+    // Update the UI with the current time and duration of the song
     currentSong.addEventListener("timeupdate", () => {
         document.querySelector(".songtime").innerHTML =
             `${secondsToMinutesSeconds(currentSong.currentTime)} / ${secondsToMinutesSeconds(currentSong.duration)}`;
@@ -93,7 +93,7 @@ const playMusic = (track) => {
         document.querySelector(".circle").style.left = percent + "%";
     });
 
-    // Add event listener to seekbar
+    // Add event listener to seekbar for seeking within the song
     document.querySelector(".seekbar").addEventListener("click", e => {
         let percent = (e.offsetX / e.target.getBoundingClientRect().width) * 100;
         document.querySelector(".circle").style.left = percent + "%";
@@ -106,39 +106,38 @@ const playMusic = (track) => {
 async function displayAlbum() {
     let a = await fetch(`http://127.0.0.1:5500/songs/`);
     let res = await a.text();
-    let cardContainer = document.querySelector(".cardContainer")
+    let cardContainer = document.querySelector(".cardContainer");
     let div = document.createElement("div");
     div.innerHTML = res;
-    let anchors = div.getElementsByTagName("a")
- 
+    let anchors = div.getElementsByTagName("a");
 
-// Traditional for loop instead of forEach
-for (let i = 0; i < anchors.length; i++) {
-    let e = anchors[i];
-    if (e.href.includes("/songs")) {
-        let albm = e.href.split("/").slice(-1)[0];
-        // Get metaData of FOLDER
-        fetch(`http://127.0.0.1:5500/songs/${albm}/info.json`)
-            .then(response => response.json())
-            .then(res => {
-                let cardHTML = `<div data-folder="${albm}" class="card">
-                    <div class="play">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="30" height="30">
-                            <circle cx="15" cy="15" r="15" fill="green" />
-                            <path d="M11 10v10l8-5-8-5z" fill="black" stroke="black" stroke-width="1" />
-                        </svg>
-                    </div>
-                    <img src="/songs/${albm}/cover.jpg" alt="">
-                    <h2>${res.title}</h2>
-                    <p>${res.description}</p>
-                </div>`;
-                cardContainer.innerHTML += cardHTML;
-            })
-            .catch(error => {
-                console.error('Error fetching JSON:', error);
-            });
+    // Traditional for loop instead of forEach
+    for (let i = 0; i < anchors.length; i++) {
+        let e = anchors[i];
+        if (e.href.includes("/songs")) {
+            let albm = e.href.split("/").slice(-1)[0];
+            // Get metaData of FOLDER
+            fetch(`http://127.0.0.1:5500/songs/${albm}/info.json`)
+                .then(response => response.json())
+                .then(res => {
+                    let cardHTML = `<div data-folder="${albm}" class="card">
+                        <div class="play">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" width="30" height="30">
+                                <circle cx="15" cy="15" r="15" fill="green" />
+                                <path d="M11 10v10l8-5-8-5z" fill="black" stroke="black" stroke-width="1" />
+                            </svg>
+                        </div>
+                        <img src="/songs/${albm}/cover.jpg" alt="">
+                        <h2>${res.title}</h2>
+                        <p>${res.description}</p>
+                    </div>`;
+                    cardContainer.innerHTML += cardHTML;
+                })
+                .catch(error => {
+                    console.error('Error fetching JSON:', error);
+                });
+        }
     }
-}
 
     // Add event listeners to each card after they are all created
     setTimeout(() => {
@@ -177,38 +176,35 @@ async function main() {
         playSongByIndex(0, songs);
     }
 
-   
+    // Attach event listener to the "next" button
+    next.addEventListener("click", async () => {
+        currentSongIndex++;
+        // Fetch songs from the current folder
+        let songs = await getSongs(currfolder);
+        // Check if the index exceeds the number of songs, loop back to the first song
+        if (currentSongIndex >= songs.length) {
+            currentSongIndex = 0;
+        }
+        // Play the next song
+        playSongByIndex(currentSongIndex, songs);
+        currentSong.play();
+        play.src = "pause.svg"; // Change to pause button
+    });
 
-// Attach event listener to the "next" button
-next.addEventListener("click", async () => {
-    currentSongIndex++;
-    // Fetch songs from the current folder
-    let songs = await getSongs(currfolder);
-    // Check if the index exceeds the number of songs, loop back to the first song
-    if (currentSongIndex >= songs.length) {
-        currentSongIndex = 0;
-    }
-    // Play the next song
-    playSongByIndex(currentSongIndex, songs);
-    currentSong.play();
-    play.src = "pause.svg"; // Change to pause button
-});
-
-// Attach event listener to the "prev" button
-prev.addEventListener("click", async () => {
-    currentSongIndex--;
-    // Fetch songs from the current folder
-    let songs = await getSongs(currfolder);
-    // Check if the index is less than 0, loop back to the last song
-    if (currentSongIndex < 0) {
-        currentSongIndex = songs.length - 1;
-    }
-    // Play the previous song
-    playSongByIndex(currentSongIndex, songs);
-    currentSong.play();
-    play.src = "pause.svg"; // Change to pause button
-});
-
+    // Attach event listener to the "prev" button
+    prev.addEventListener("click", async () => {
+        currentSongIndex--;
+        // Fetch songs from the current folder
+        let songs = await getSongs(currfolder);
+        // Check if the index is less than 0, loop back to the last song
+        if (currentSongIndex < 0) {
+            currentSongIndex = songs.length - 1;
+        }
+        // Play the previous song
+        playSongByIndex(currentSongIndex, songs);
+        currentSong.play();
+        play.src = "pause.svg"; // Change to pause button
+    });
 
     // Attach event listeners to the initial song list
     attachSongEventListeners(songs);
@@ -246,11 +242,23 @@ prev.addEventListener("click", async () => {
         } else {
             vll.src = "volume.svg";
         }
+       
     });
+
+    // Function to play a song by its index
+    function playSongByIndex(index, songList) {
+        if (index < 0 || index >= songList.length) {
+            return; // Index out of range
+        }
+        let songName = songList[index];
+        currentSong = playMusic(songName);
+        currentSongIndex = index; // Update current song index
+    }
 }
 
+// Attach event listeners to each song and the volume control
 function attachSongEventListeners(songs) {
-    // Attach event listeners to each song
+    // Attach click event listeners to each song in the song list
     Array.from(document.querySelectorAll(".songlist li")).forEach((e, index) => {
         e.addEventListener("click", () => {
             playSongByIndex(index, songs); // Play the clicked song
@@ -258,6 +266,22 @@ function attachSongEventListeners(songs) {
             play.src = "pause.svg"; // Change to pause button
         });
     });
+
+    // Add event listener to volume control
+    // Add event listener to volume control
+document.querySelector(".volu").addEventListener("click", e => {
+    let volumeIcon = e.target;
+    if (volumeIcon.src.includes("volume.svg")) {
+        volumeIcon.src = "mute.svg"; // Change to mute icon
+        currentSong.volume = 0; // Mute the current song
+        document.querySelector(".range").getElementsByTagName("input")[0].value = 0;
+    } else if (volumeIcon.src.includes("mute.svg")) {
+        volumeIcon.src = "volume.svg"; // Change to volume icon
+        currentSong.volume = 0.6; // Unmute the current song (adjust this as needed)
+        document.querySelector(".range").getElementsByTagName("input")[0].value = currentSong.volume * 100;
+    }
+});
+
 
     // Function to play a song by its index
     function playSongByIndex(index, songList) {
