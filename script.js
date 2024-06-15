@@ -127,7 +127,7 @@ async function displayAlbum() {
                                 <path d="M11 10v10l8-5-8-5z" fill="black" stroke="black" stroke-width="1" />
                             </svg>
                         </div>
-                        <img src="/songs/${albm}/cover.jpg" alt="">
+                        <img src="/songs/${albm}/cover.jpeg" alt="">
                         <h2>${res.title}</h2>
                         <p>${res.description}</p>
                     </div>`;

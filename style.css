@@ -114,7 +114,7 @@ body {
     gap: 10px;
     flex-wrap: wrap;
     overflow-y: auto;
-    max-height: 70vh; 
+    max-height: 65vh; 
 }
 
 /* .spotifyplay {
@@ -125,7 +125,7 @@ body {
 
 } */
 .card{
-    width: 200px;
+    width: 170px;
     padding: 10px;
     border-radius: 5px;
     background-color: black;
@@ -408,6 +408,8 @@ body {
         width:80vw ;
     }
 }
+
+
 
 
 
